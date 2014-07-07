@@ -50,7 +50,7 @@ class Planets(BaseModel):
     star_name = CharField()
     is_planet = BooleanField()
     name = CharField()
-    list = CharField()
+    list_type = CharField()
     mass = DoubleField()
     radius = DoubleField()
     temperature = DoubleField()
