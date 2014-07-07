@@ -47,6 +47,7 @@ class Stars(BaseModel):
 
 class Planets(BaseModel):
     system_name = CharField()
+    star_name = CharField()
     is_planet = BooleanField()
     name = CharField()
     list = CharField()
@@ -102,21 +103,26 @@ for file in os.listdir("C:\Development\Resources\Github\open_exoplanet_catalogue
             for star in system:
                 current_star_dict = {}
                 if system.tag == "name":
-                    if "name" in current_star_dict is True and current_star_dict["name"] == '':
+                    if "system_name" in current_star_dict is True and current_star_dict["system_name"] == '':
                         current_star_dict["system_name"] = system.text
                         current_star_dict["is_star"] = True
-                    elif "name" in current_star_dict is True and current_star_dict["name"] != '':
-                        current_star_dict["name"] = current_star_dict["name"].append(" " + system.text)
+                    elif "system_name" in current_star_dict is True and current_star_dict["system_name"] != '':
+                        current_star_dict["system_name"] = current_star_dict["system_name"].append(" " + system.text)
                 else:
                     current_star_dict[star.tag] = star.text
 
                 for planet in star:
                     current_planet_dict = {}
                     if system.tag == "name":
-                        if "name" in current_planet_dict is True and current_planet_dict["name"] == '':
+                        if "system_name" in current_planet_dict is True and current_planet_dict["system_name"] == '':
                             current_planet_dict["system_name"] = system.text
                             current_planet_dict["is_planet"] = True
-                        elif "name" in current_planet_dict is True and current_planet_dict["name"] != '':
-                            current_planet_dict["name"] = current_planet_dict["name"].append(" " + system.text)
+                        elif "system_name" in current_planet_dict is True and current_planet_dict["system_name"] != '':
+                            current_planet_dict["system_name"] = current_planet_dict["system_name"].append(" " + system.text)
+                    elif star.tag == "name":
+                        if "star_name" in current_planet_dict is True and current_planet_dict["star_name"] == '':
+                            current_planet_dict["star_name"] = star.text
+                        elif "star_name" in current_planet_dict is True and current_planet_dict["star_name"] != '':
+                            current_planet_dict["star_name"] = current_planet_dict["star_name"].append(" " + star.text)
                     else:
                         current_planet_dict[planet.tag] = planet.text
