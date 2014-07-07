@@ -22,6 +22,7 @@ class BaseModel(Model):
 class Systems(BaseModel):
     name = CharField()
     is_system = BooleanField()
+    is_binary = BooleanField()
     rightAscension = DoubleField()
     declination = DoubleField()
     distance = DoubleField()
@@ -31,7 +32,6 @@ class Systems(BaseModel):
 class Stars(BaseModel):
     system_name = CharField()
     is_star = BooleanField()
-    is_binary = BooleanField()
     name = CharField()
     mass = DoubleField()
     radius = DoubleField()
@@ -48,7 +48,6 @@ class Stars(BaseModel):
 class Planets(BaseModel):
     system_name = CharField()
     star_name = CharField()
-    is_planet = BooleanField()
     name = CharField()
     list_type = CharField()
     mass = DoubleField()
@@ -89,40 +88,25 @@ for file in os.listdir("C:\Development\Resources\Github\open_exoplanet_catalogue
         #Gets all files that end with .xml in directory and parse them
         tree = etree.parse("C:\Development\Resources\Github\open_exoplanet_catalogue\systems" + "\\" + file)
         root = tree.getroot()
+        #Creates a dictionary for each file that starts over with each new file.
         for system in root:
             current_system_dict = {}
-            if system.tag == "name":
-                if "name" in current_system_dict is True and current_system_dict["name"] == '':
-                    current_system_dict[system.tag] = system.text
-                    current_system_dict["is_system"] = True
-                elif "name" in current_system_dict is True and current_system_dict["name"] != '':
-                    current_system_dict["name"] = current_system_dict["name"].append(" " + system.text)
+            if system.tag  == "star":
+                current_system_dict["is_system"] = True
+                current_system_dict["is_binary"] = False
+            elif system.tag == "binary":
+                current_system_dict["is_system"] = True
+                current_system_dict["is_binary"] = True
             else:
                 current_system_dict[system.tag] = system.text
-
+            print(current_system_dict.keys())
             for star in system:
                 current_star_dict = {}
-                if system.tag == "name":
-                    if "system_name" in current_star_dict is True and current_star_dict["system_name"] == '':
-                        current_star_dict["system_name"] = system.text
-                        current_star_dict["is_star"] = True
-                    elif "system_name" in current_star_dict is True and current_star_dict["system_name"] != '':
-                        current_star_dict["system_name"] = current_star_dict["system_name"].append(" " + system.text)
+                if star.tag == "planet":
+                    current_star_dict["is_star"] = True
                 else:
                     current_star_dict[star.tag] = star.text
-
+               #print(current_star_dict.keys())
                 for planet in star:
-                    current_planet_dict = {}
-                    if system.tag == "name":
-                        if "system_name" in current_planet_dict is True and current_planet_dict["system_name"] == '':
-                            current_planet_dict["system_name"] = system.text
-                            current_planet_dict["is_planet"] = True
-                        elif "system_name" in current_planet_dict is True and current_planet_dict["system_name"] != '':
-                            current_planet_dict["system_name"] = current_planet_dict["system_name"].append(" " + system.text)
-                    elif star.tag == "name":
-                        if "star_name" in current_planet_dict is True and current_planet_dict["star_name"] == '':
-                            current_planet_dict["star_name"] = star.text
-                        elif "star_name" in current_planet_dict is True and current_planet_dict["star_name"] != '':
-                            current_planet_dict["star_name"] = current_planet_dict["star_name"].append(" " + star.text)
-                    else:
-                        current_planet_dict[planet.tag] = planet.text
+                    current_planet_dict = {planet.tag: planet.text}
+                    #print(current_planet_dict.keys())
