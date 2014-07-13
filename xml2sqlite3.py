@@ -23,8 +23,8 @@ class Systems(BaseModel):
     name = CharField()
     is_system = BooleanField()
     is_binary = BooleanField()
-    rightAscension = DoubleField()
-    declination = DoubleField()
+    rightAscension = TextField()
+    declination = TextField()
     distance = DoubleField()
     epoch = TextField()
 
@@ -81,24 +81,27 @@ def create_tables():
 
 #End of table creation and schema of database
 
+create_tables()
+
+
 def parse_system(system_dict):
     print("Parse_system Called")
     current_system = Systems()
     for entry in system_dict:
         if entry == "name":
-            current_system.name = entry.value
+            current_system.name = system_dict[entry]
         elif entry == "rightascension":
-            current_system.rightAscension = entry.value
+            current_system.rightAscension = system_dict[entry]
         elif entry == "declination":
-            current_system.declination = entry.value
+            current_system.declination = system_dict[entry]
         elif entry == "distance":
-            current_system.distance = entry.value
+            current_system.distance = system_dict[entry]
         elif entry == "epoch":
-            current_system.epoch = entry.value
+            current_system.epoch = system_dict[entry]
         elif entry == "is_system":
-            current_system.is_system = entry.value
+            current_system.is_system = system_dict[entry]
         elif entry == "is_binary":
-            current_system.is_binary = entry.value
+            current_system.is_binary = system_dict[entry]
     print("Current_System Saved")
     current_system.save()
 
@@ -108,33 +111,33 @@ def parse_star(star_dict):
     current_star = Stars()
     for entry in star_dict:
         if entry == "name":
-            current_star.name = entry.value
+            current_star.name = star_dict[entry]
         elif entry == "is_star":
-            current_star.is_star = entry.value
+            current_star.is_star = star_dict[entry]
         elif entry == "mass":
-            current_star.mass = entry.value
+            current_star.mass = star_dict[entry]
         elif entry == "radius":
-            current_star.radius = entry.value
+            current_star.radius = star_dict[entry]
         elif entry == "metallicity":
-            current_star.metallicity = entry.value
+            current_star.metallicity = star_dict[entry]
         elif entry == "spectraltype":
-            current_star.spectral_type = entry.value
+            current_star.spectral_type = star_dict[entry]
         elif entry == "temperature":
-            current_star.temperature = entry.value
+            current_star.temperature = star_dict[entry]
         elif entry == "magVBRIGHK":
-            current_star.magB = entry.value
+            current_star.magB = star_dict[entry]
         elif entry == "magV":
-            current_star.magV = entry.value
+            current_star.magV = star_dict[entry]
         elif entry == "magR":
-            current_star.magR = entry.value
+            current_star.magR = star_dict[entry]
         elif entry == "magI":
-            current_star.magI = entry.value
+            current_star.magI = star_dict[entry]
         elif entry == "magG":
-            current_star.magG = entry.value
+            current_star.magG = star_dict[entry]
         elif entry == "magH":
-            current_star.magH = entry.value
+            current_star.magH = star_dict[entry]
         elif entry == "magK":
-            current_star.magK = entry.value
+            current_star.magK = star_dict[entry]
     print("Current_Star Saved")
     current_star.save()
 
@@ -168,8 +171,8 @@ for file in os.listdir("C:\Development\Resources\Github\open_exoplanet_catalogue
                     else:
                         current_star_dict[star.tag] = star.text
                     current_planet_dict = {}
-                #parse_system(current_system_dict)
-                #print(current_star_dict.items())
+                    parse_system(current_system_dict)
+                    print(current_star_dict.items())
                     for planet in star:
                         current_planet_dict[planet.tag] = planet.text
                     else:
