@@ -1,3 +1,5 @@
+from peewee import DeleteQuery, SelectQuery
+
 __author__ = 'Jacob'
 from peewee import *
 import sqlite3
@@ -20,13 +22,12 @@ class BaseModel(Model):
 
 
 class Systems(BaseModel):
-    name = CharField()
-    is_system = BooleanField()
-    is_binary = BooleanField()
-    rightAscension = TextField()
-    declination = TextField()
-    distance = DoubleField()
-    epoch = TextField()
+    name = CharField(null=True)
+    is_system = BooleanField(null=True)
+    is_binary = BooleanField(null=True)
+    rightAscension = TextField(null=True)
+    declination = TextField(null=True)
+    distance = DoubleField(null=True)
 
 
 class Stars(BaseModel):
@@ -96,14 +97,14 @@ def parse_system(system_dict):
             current_system.declination = system_dict[entry]
         elif entry == "distance":
             current_system.distance = system_dict[entry]
-        elif entry == "epoch":
-            current_system.epoch = system_dict[entry]
         elif entry == "is_system":
             current_system.is_system = system_dict[entry]
         elif entry == "is_binary":
             current_system.is_binary = system_dict[entry]
-    print("Current_System Saved")
-    current_system.save()
+    print("Trying to Save")
+    if current_system.name is not None and current_system.rightAscension is not None and current_system.distance is not None and current_system.is_system is not None and current_system.declination is not None:
+        print("Saved")
+        current_system.save()
 
 
 def parse_star(star_dict):
@@ -162,6 +163,7 @@ for file in os.listdir("C:\Development\Resources\Github\open_exoplanet_catalogue
             else:
                 current_system_dict[system.tag] = system.text
             #print(current_system_dict.items())
+            #parse_system(current_system_dict)
             if system.tag == "star":
                 current_star_dict = {}
                 for star in system:
@@ -171,14 +173,28 @@ for file in os.listdir("C:\Development\Resources\Github\open_exoplanet_catalogue
                     else:
                         current_star_dict[star.tag] = star.text
                     current_planet_dict = {}
-                    parse_system(current_system_dict)
-                    print(current_star_dict.items())
+                    #parse_system(current_system_dict)
+                    #print(current_star_dict.items())
                     for planet in star:
                         current_planet_dict[planet.tag] = planet.text
                     else:
                         if current_planet_dict is not False:
-                            print(current_planet_dict.items())
+                            x = 1
+                            #print(current_planet_dict.items())
 
-            #print(current_system_dict.items())
+            print(current_system_dict.items())
+            parse_system(current_system_dict)
             #print(current_star_dict.items())
             #print(current_planet_dict.items())
+
+
+def clean_up_systems():
+    sq = SelectQuery(Systems).where(Systems.name).dicts()
+    '''Delete the entries that have the same name after the first one'''
+    for db_system in sq:
+        current_db_system = db_system
+        count = 0
+        for check in sq:
+            print(check.items())
+
+clean_up_systems()
