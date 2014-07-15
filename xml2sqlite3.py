@@ -10,6 +10,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as etree
 
+os.remove('C:\Development\Python\Python Projects\Xml2Sqlite3\exoplanets.db')
 
 # Peewee Database set up and creation of tables
 database = SqliteDatabase('exoplanets.db', threadlocals=True)
@@ -143,6 +144,57 @@ def parse_star(star_dict):
     current_star.save()
 
 
+def parse_planet(planet_dict):
+    print("Parse_planet called")
+    current_planet = Planets()
+    for entry in planet_dict:
+        if entry == "name":
+            current_planet.name = planet_dict[entry]
+        elif entry == "list":
+            current_planet.list_type = planet_dict[entry]
+        elif entry == "mass":
+            current_planet.mass = planet_dict[entry]
+        elif entry == "radius":
+            current_planet.radius = planet_dict[entry]
+        elif entry == "temperature":
+            current_planet.temperature = planet_dict[entry]
+        elif entry == "period":
+            current_planet.period = planet_dict[entry]
+        elif entry == "semimajoraxis":
+            current_planet.semi_major_axis = planet_dict[entry]
+        elif entry == "eccentricity":
+            current_planet.eccentricity = planet_dict[entry]
+        elif entry == "inclination":
+            current_planet.inclination = planet_dict[entry]
+        elif entry == "periastron":
+            current_planet.periastron = planet_dict[entry]
+        elif entry == "ascendingnode":
+            current_planet.ascending_node = planet_dict[entry]
+        elif entry == "longitude":
+            current_planet.longitude = planet_dict[entry]
+        elif entry == "description":
+            current_planet.description = planet_dict[entry]
+        elif entry == "age":
+            current_planet.age = planet_dict[entry]
+        elif entry == "discoverymethod":
+            current_planet.discovery_method = planet_dict[entry]
+        elif entry == "istransiting":
+            current_planet.is_transiting = planet_dict[entry]
+        elif entry == "transittime":
+            current_planet.transit_time = planet_dict[entry]
+        elif entry == "lastupdate":
+            current_planet.last_update = planet_dict[entry]
+        elif entry == "discoveryyear":
+            current_planet.discovery_year = planet_dict[entry]
+        elif entry == "image":
+            current_planet.image = planet_dict[entry]
+        elif entry == "imagedescription":
+            current_planet.image_description = planet_dict[entry]
+        elif entry == "spinorbitalalignment":
+            current_planet.spin_orbital_alignment = planet_dict[entry]
+        print("Current Planet Saved")
+        current_planet.save()
+
 #Start of XML parser
 for file in os.listdir("C:\Development\Resources\Github\open_exoplanet_catalogue\systems") or os.listdir("C:\Development\Resources\Github\open_exoplanet_catalogue\kepler"):
     if file.endswith(".xml"):
@@ -182,9 +234,11 @@ for file in os.listdir("C:\Development\Resources\Github\open_exoplanet_catalogue
                             x = 1
                             #print(current_planet_dict.items())
 
-            print(current_system_dict.items())
+            #print(current_system_dict.items())
+                    parse_planet(current_planet_dict)
+                parse_star(current_star_dict)
             parse_system(current_system_dict)
-            #print(current_star_dict.items())
+                #print(current_star_dict.items())
             #print(current_planet_dict.items())
 
 
@@ -197,4 +251,4 @@ def clean_up_systems():
         for check in sq:
             print(check.items())
 
-clean_up_systems()
+#clean_up_systems()
